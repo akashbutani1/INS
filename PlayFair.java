@@ -3,7 +3,7 @@ import java.util.*;
 class Playfair{
 	public static void main(String args[]){
 		Scanner s= new Scanner(System.in);
-		System.out.println("Enter Plain Text:");
+		System.out.println("Enter Plain Text in even length	:");
 		String plainText=s.nextLine();
 		System.out.println("\nEnter Key:");
 		String key=s.nextLine();
