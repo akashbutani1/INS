@@ -1,39 +1,47 @@
 import java.util.*;
 
-class PlayFair{
-	public static void main(String a[]){
-		
-		Scanner s = new Scanner(System.in);
-		
-		System.out.println("Enter Plain Text in even numbers:");
-		String plainText = s.nextLine();
-		
-		System.out.println("Enter Key:");
-		String key = s.nextLine();
-		
-		char matrix[][] = new char[5][5];
-		char ab;
+class Playfair{
+	public static void main(String args[]){
+		Scanner s= new Scanner(System.in);
+		System.out.println("Enter Plain Text:");
+		String plainText=s.nextLine();
+		System.out.println("\nEnter Key:");
+		String key=s.nextLine();
+
+		char[][] matrix=new char[5][5];
+		int l=key.length();
 		int count=0;
-		int l = key.length();
-		char keyChar[] = new char[l];
+		char[] keychar=new char[l];
+	
+		int p=0;	
+		String flag="";
+
 		for(int i=0;i<l;i++)
 		{
 			if(key.charAt(i)=='j'){
-				keyChar[i]='i';
+				keychar[i]='i';
 			}
 			else{
-				keyChar[i]=key.charAt(i);
+				keychar[i]=key.charAt(i);
 			}
 		}
-		int p=0;
-		
+		key=String.valueOf(keychar);
+		for (int i=0;i<l;i++ ) {
+			if(flag.indexOf(key.charAt(i))==-1)
+			{		
+				keychar[p]=key.charAt(i);
+				p++;
+				flag=flag+key.charAt(i);
+			}	
+		}
+		key=String.valueOf(keychar);
 		for(int i=0;i<5;i++)
 		{
 			for(int j=0;j<5;j++)
 			{
-				if(count<key.length())
+				if(count<flag.length())
 				{
-					matrix[i][j]=keyChar[count];
+					matrix[i][j]=keychar[count];
 					count++;
 				}
 			}
@@ -41,23 +49,23 @@ class PlayFair{
 		System.out.println("\n");
 		int i=0;
 		int j=0;
-		l=key.length();
-		ab='a';
+		l=flag.length();
+		char a='a';
 		i=l/5;
 		int q=l%5;
 		for(p=i;p<5;p++)
 		{
 			while(q<5)
 			{
-				if(ab=='j'){
-					ab++;
+				if(a=='j'){
+					a++;
 				}
-				if(key.indexOf(ab)==-1)
+				if(key.indexOf(a)==-1)
 				{
-					matrix[p][q]=ab;
+					matrix[p][q]=a;
 					q++;
 				}
-				ab++;	
+				a++;	
 			}
 			q=0;
 		}
@@ -67,47 +75,79 @@ class PlayFair{
 			}
 			System.out.println(" ");
 		}
-		
 		String cipherText = encrypt(matrix,plainText);
-		System.out.println("Cipher Text is: "+cipherText);
-		
-		
-		
+        System.out.println("Cipher Text =" + cipherText);
+        String decPlainText = decrypt(matrix,cipherText);
+        System.out.println("Decrypt Plain Text =" + decPlainText);
 	}
-	public static String encrypt(char matrix[][], String plainText){
-		
-		String ct = "";
-		int k,l,m,n;
-		k=l=m=n=0;
-		int length = plainText.length();
-		for(int p=0; p<length; p = p+2){
-			for(int i=0;i<5;i++){
-				for(int j=0;j<5;j++){
-					if(plainText.charAt(p) == matrix[i][j]){
-						l=i;
-						k=j;
+
+	public static String encrypt(char matrix[][], String pt){
+        int length = pt.length();
+        String ct ="";
+        int l,k,m,n;
+        l =k = m =n = 0;
+        for(int p = 0; p < length ; p = p + 2){
+	        for (int i =0 ; i < 5  ; i++ ) {
+				for (int j = 0 ; j < 5  ; j++ ) {
+					if(pt.charAt(p)==matrix[i][j]){
+							l = i;
+							k = j;
 					}
-					if(plainText.charAt(p+1) == matrix[i][j]){
-						m=i;
-						n=j;
+					if(pt.charAt(p + 1)==matrix[i][j]){
+							m = i;
+							n = j;
 					}
 				}
 			}
-			if(l==m){
-				ct = matrix[l][(k+1)%5]+matrix[l][(n+1)%5];
+			if(l == m){
+				ct = ct+matrix[l][(k+1) % 5]+matrix[l][(n+1) % 5];
 			}
-			else if(k==n){
-				ct = matrix[(l+1)%5][k]+matrix[(m+1)%5][k];
+			else if(k == n){
+				ct = ct+matrix[(l+1)%5][k] + matrix[(m+1) % 5][k];	
 			}
 			else{
-				ct = matrix[l][n]+matrix[m][k];
+				ct = ct + matrix[l][n] + matrix[m][k];
 			}
-		}
-		return ct;
-	}
-	/*public static String decrypt(char matrix[][], String cipherText){
-	
-			
+		}	
+        return ct;
+    }
+    public static String decrypt(char matrix[][], String ct){
+    	int length = ct.length();
+        String pt ="";
+        int l,k,m,n;
+        l =k = m =n = 0;
+        for(int p = 0; p < length ; p = p + 2){
+	        for (int i =0 ; i < 5  ; i++ ) {
+				for (int j = 0 ; j < 5  ; j++ ) {
+					if(ct.charAt(p)==matrix[i][j]){
+							l = i;
+							k = j;
+					}
+					if(ct.charAt(p + 1)==matrix[i][j]){
+							m = i;
+							n = j;
+					}
+				}
+			}
+			if(l == m){
+				if(k == 0 )
+					k = 5;
+				if(n == 0)
+					n = 5;
+					pt = pt+matrix[l][(k-1)] + matrix[l][(n-1)];
 
-	}*/
+			}
+			else if(k == n){
+				if(l == 0 )
+					l = 5;
+				if(m == 0)
+					m = 5;
+				pt = pt + matrix[(l-1)][k] + matrix[(m-1)][k];	
+			}
+			else{
+				pt = pt + matrix[l][n] + matrix[m][k];
+			}
+		}	
+        return pt;
+    }
 }
